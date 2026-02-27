@@ -1,0 +1,10 @@
+Method: SHR
+Topology: Abi
+Load: light
+Total Steps: 5000
+Total Time: 1166.5s
+
+Type I   (Latency-sensitive): count=1039, delay=17.63ms, thrpt=0.9968, loss=0.0124
+Type II  (Throughput-sensitive): count=1525, delay=25.27ms, thrpt=0.9637, loss=0.0225
+Type III (Latency-throughput): count=1512, delay=20.80ms, thrpt=0.9661, loss=0.0185
+Type IV  (Latency-loss): count=924, delay=17.47ms, thrpt=0.9880, loss=0.0178
