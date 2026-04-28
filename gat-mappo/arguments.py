@@ -90,6 +90,14 @@ def get_mappo_args():
     # Environment
     parser.add_argument('--env-name', default='Abi')
     parser.add_argument('--demand-matrix', default='Abi_500.txt')
+    # added because of new scnario
+    parser.add_argument('--scenario', type=str, default='initialization',
+                        choices=['initialization', 'link_failure', 'traffic_change',
+                                 'link_degradation'],
+                        help='Training scenario')
+    parser.add_argument('--load', type=str, default='light',
+                        choices=['light', 'heavy', 'default'],
+                        help='Traffic load: light(10), heavy(50), default(simenv)')
     # Logging
     parser.add_argument('--log-dir', default='./log/mappo_initialization')
     parser.add_argument('--model-load-path', default=None)

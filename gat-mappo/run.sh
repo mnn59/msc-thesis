@@ -28,12 +28,12 @@
 #     --model-save-path ./model/ppo_link_failure
 
 # Traffic change (Fig.5 c,f)
-python3 main.py \
-    --env-name Abi --demand-matrix Abi_500.txt \
-    --num-env-steps 180000 --use-gae --no-gat \
-    --log-dir ./log/ppo_traffic_change \
-    --model-load-path ./model/ppo_initialization \
-    --model-save-path ./model/ppo_traffic_change
+# python3 main.py \
+#     --env-name Abi --demand-matrix Abi_500.txt \
+#     --num-env-steps 180000 --use-gae --no-gat \
+#     --log-dir ./log/ppo_traffic_change \
+#     --model-load-path ./model/ppo_initialization \
+#     --model-save-path ./model/ppo_traffic_change
 
 
 # #############  GAT-MAPPO-CTDE  ###################################
@@ -66,6 +66,15 @@ python3 main.py \
 #     --model-load-path ./model/mappo_initialization \
 #     --model-save-path ./model/mappo_traffic_change
 
+
+# Link degradation scenario
+python3 main_mappo.py \
+    --scenario link_degradation \
+    --env-name Abi --demand-matrix Abi_500.txt \
+    --num-env-steps 180000 --use-gat \
+    --log-dir ./log/mappo_link_degradation \
+    --model-load-path ./model/mappo_initialization \
+    --model-save-path ./model/mappo_link_degradation
 
 # #############  GENERATE PLOTS  ###################################
 # python3 fig5.py --log-dir ./log/ --save-path ./fig5.png --all

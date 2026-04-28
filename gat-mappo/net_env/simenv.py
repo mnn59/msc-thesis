@@ -561,38 +561,124 @@ class NetEnv():
             self._request_demands = [[100], [1500], [1500], [500]]
             self._request_times = [[15], [15], [15], [15]]
     
+    # '''
+    #     changing network status:
+    #     link failure
+    #     demand changing
+    # '''
+    # def change_env(self, msg):
+    #     if msg == "link_failure":
+    #         # Abi link failure 1-5
+    #         self._link_capa[0][4] = 0
+    #         self._link_capa[4][0] = 0
+            
+    #         # calculate shortest path distance for new topology
+    #         self._shr_dist = []
+    #         for i in range(self._node_num):
+    #             self._shr_dist.append([])
+    #             for j in range(self._node_num):
+    #                 if j == i:
+    #                     self._shr_dist[i].append(0)
+    #                 elif (j in self._link_lists[i]) and (self._link_capa[i][j] > 0):
+    #                     self._shr_dist[i].append(1)
+    #                 else:
+    #                     self._shr_dist[i].append(1e6) # inf
+    #         for k in range(self._node_num):
+    #             for i in range(self._node_num):
+    #                 for j in range(self._node_num):
+    #                     if(self._shr_dist[i][j] > self._shr_dist[i][k] + self._shr_dist[k][j]):
+    #                         self._shr_dist[i][j] = self._shr_dist[i][k] + self._shr_dist[k][j] 
+    #     elif msg == "demand_change":
+    #         # from light load to mid load, may be for heavy load in the future
+    #         self._request_times = [[30], [30], [30], [30]]
+    #     else:
+    #         raise NotImplementedError
+
+
     '''
         changing network status:
         link failure
         demand changing
+        link degradation (gradual bandwidth reduction)
     '''
     def change_env(self, msg):
         if msg == "link_failure":
             # Abi link failure 1-5
             self._link_capa[0][4] = 0
             self._link_capa[4][0] = 0
-            
-            # calculate shortest path distance for new topology
-            self._shr_dist = []
-            for i in range(self._node_num):
-                self._shr_dist.append([])
-                for j in range(self._node_num):
-                    if j == i:
-                        self._shr_dist[i].append(0)
-                    elif (j in self._link_lists[i]) and (self._link_capa[i][j] > 0):
-                        self._shr_dist[i].append(1)
-                    else:
-                        self._shr_dist[i].append(1e6) # inf
-            for k in range(self._node_num):
-                for i in range(self._node_num):
-                    for j in range(self._node_num):
-                        if(self._shr_dist[i][j] > self._shr_dist[i][k] + self._shr_dist[k][j]):
-                            self._shr_dist[i][j] = self._shr_dist[i][k] + self._shr_dist[k][j] 
+            # recalculate shortest path distance for new topology
+            self._recalc_shortest_paths()
+
         elif msg == "demand_change":
-            # from light load to mid load, may be for heavy load in the future
+            # from light load to mid load
             self._request_times = [[30], [30], [30], [30]]
+
+        # ============================================================
+        # Dynamic Link Quality Degradation (NEW SCENARIO)
+        # Gradual bandwidth reduction on bottleneck link 0-4.
+        # Uses absolute percentages of ORIGINAL capacity.
+        # ============================================================
+        elif msg == "link_degradation_stage1":
+            # Save original capacity once (first degradation call)
+            if not hasattr(self, '_original_link_capa_04'):
+                self._original_link_capa_04 = self._link_capa[0][4]
+                self._original_link_capa_40 = self._link_capa[4][0]
+            # 60% of original capacity
+            self._link_capa[0][4] = int(self._original_link_capa_04 * 0.6)
+            self._link_capa[4][0] = int(self._original_link_capa_40 * 0.6)
+            print(f"  [DEGRADATION] Link 0-4 at 60%: {self._link_capa[0][4]} Kbps "
+                  f"(original: {self._original_link_capa_04} Kbps)")
+            # No shortest-path recalc: link is still alive, _shr_dist uses hop count
+
+        elif msg == "link_degradation_stage2":
+            if not hasattr(self, '_original_link_capa_04'):
+                self._original_link_capa_04 = self._link_capa[0][4]
+                self._original_link_capa_40 = self._link_capa[4][0]
+            # 20% of original capacity
+            self._link_capa[0][4] = int(self._original_link_capa_04 * 0.2)
+            self._link_capa[4][0] = int(self._original_link_capa_40 * 0.2)
+            print(f"  [DEGRADATION] Link 0-4 at 20%: {self._link_capa[0][4]} Kbps")
+
+        elif msg == "link_degradation_stage3":
+            if not hasattr(self, '_original_link_capa_04'):
+                self._original_link_capa_04 = self._link_capa[0][4]
+                self._original_link_capa_40 = self._link_capa[4][0]
+            # 5% of original capacity (near-failure, but link stays alive)
+            self._link_capa[0][4] = max(1, int(self._original_link_capa_04 * 0.05))
+            self._link_capa[4][0] = max(1, int(self._original_link_capa_40 * 0.05))
+            print(f"  [DEGRADATION] Link 0-4 at 5%: {self._link_capa[0][4]} Kbps")
+
+        elif msg == "link_recovery":
+            # Full recovery to original capacity
+            if hasattr(self, '_original_link_capa_04'):
+                self._link_capa[0][4] = self._original_link_capa_04
+                self._link_capa[4][0] = self._original_link_capa_40
+                print(f"  [RECOVERY] Link 0-4 restored to 100%: "
+                      f"{self._original_link_capa_04} Kbps")
+            else:
+                print("  [RECOVERY] Warning: no original capacity saved, skipping")
+
         else:
-            raise NotImplementedError
+            raise NotImplementedError(f"Unknown change_env message: {msg}")
+
+    def _recalc_shortest_paths(self):
+        """Recalculate shortest paths (Floyd-Warshall) after topology change."""
+        self._shr_dist = []
+        for i in range(self._node_num):
+            self._shr_dist.append([])
+            for j in range(self._node_num):
+                if j == i:
+                    self._shr_dist[i].append(0)
+                elif (j in self._link_lists[i]) and (self._link_capa[i][j] > 0):
+                    self._shr_dist[i].append(1)
+                else:
+                    self._shr_dist[i].append(1e6)
+        for k in range(self._node_num):
+            for i in range(self._node_num):
+                for j in range(self._node_num):
+                    if self._shr_dist[i][j] > self._shr_dist[i][k] + self._shr_dist[k][j]:
+                        self._shr_dist[i][j] = self._shr_dist[i][k] + self._shr_dist[k][j]
+
 
     '''
     calculating the Widest Path from s to t

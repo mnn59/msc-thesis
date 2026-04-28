@@ -84,6 +84,26 @@ def generate_request(net, src, src_port, dst, dst_port, rtype, demand, rtime, ti
             
     return delay, throughput, loss, (src_popen, dst_popen)
 
+
+def apply_bw_change(net, sw1_name, sw2_name, new_bw_mbps):
+    """Apply tc bandwidth limit to both directions of a Mininet link."""
+    node1 = net.getNodeByName(sw1_name)
+    node2 = net.getNodeByName(sw2_name)
+    rate_kbps = int(new_bw_mbps * 1000)
+    for src, dst in [(node1, node2), (node2, node1)]:
+        for intf in src.intfList():
+            if intf.link:
+                other = (intf.link.intf1
+                         if intf.link.intf2 == intf
+                         else intf.link.intf2)
+                if other.node == dst:
+                    intf.cmd(f'tc qdisc del dev {intf.name} root 2>/dev/null || true')
+                    intf.cmd(f'tc qdisc add dev {intf.name} root handle 1: htb default 1')
+                    intf.cmd(f'tc class add dev {intf.name} parent 1: classid 1:1 '
+                             f'htb rate {rate_kbps}kbit ceil {rate_kbps}kbit')
+                    print(f"    {intf.name}: rate limited to {rate_kbps} kbps")
+
+
 def load_topoinfo(toponame):
     topo_file = open("./topo_info/%s.txt" % toponame, "r")
     content = topo_file.readlines()
@@ -165,18 +185,37 @@ if __name__ == '__main__':
         
         # For Abi link failure & demand change test
         # we let testbed send the failure information to simenv for simple implementation 
-        if time_step == 10000:  
+        # if time_step == 10000:  
             
-            # link failue
-            # net.configLinkStatus('s1', 's5', 'down')
-            # ret['change'] = 'link_failure'
+        #     # link failue
+        #     # net.configLinkStatus('s1', 's5', 'down')
+        #     # ret['change'] = 'link_failure'
             
-            # demand change
-            ret['change'] = "demand_change"
+        #     # demand change
+        #     ret['change'] = "demand_change"
 
-            # initialization
-            # pass
-        
+        #     # initialization
+        #     # pass
+
+        # === LINK DEGRADATION SCENARIO ===
+        # (comment out the other scenario blocks when using this)
+        if time_step == 10000:
+            apply_bw_change(net, 's1', 's5', 1.488)  # 60% of 2.48 Mbps
+            ret['change'] = 'link_degradation_stage1'
+        elif time_step == 40000:
+            apply_bw_change(net, 's1', 's5', 0.496)  # 20%
+            ret['change'] = 'link_degradation_stage2'
+        elif time_step == 80000:
+            apply_bw_change(net, 's1', 's5', 0.124)  # 5%
+            ret['change'] = 'link_degradation_stage3'
+        elif time_step == 120000:
+            apply_bw_change(net, 's1', 's5', 2.48)   # 100% recovery
+            ret['change'] = 'link_recovery'
+        elif time_step == 150000:
+            apply_bw_change(net, 's1', 's5', 0.496)  # 20% re-degrade
+            ret['change'] = 'link_degradation_stage2'
+
+    
         
         msg = json.dumps(ret)
         conn.send(msg.encode())

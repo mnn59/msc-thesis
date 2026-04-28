@@ -487,6 +487,51 @@ from net_env.simenv import NetEnv
 from net_env.env_utils import extract_adjacency_matrix
 
 
+
+# =====================================================================
+# SCENARIO CONFIGURATIONS
+# =====================================================================
+SCENARIO_CONFIGS = {
+    'initialization': {
+        'description': 'Training from scratch (300k steps)',
+        'total_steps': 300000,
+        'events': []
+    },
+    'link_failure': {
+        'description': 'Single link failure at t=10k (180k steps)',
+        'total_steps': 180000,
+        'events': [
+            {'timestep': 10000, 'action': 'link_failure',
+             'description': 'Link 0-4 fails'}
+        ]
+    },
+    'traffic_change': {
+        'description': 'Traffic demand change at t=10k (180k steps)',
+        'total_steps': 180000,
+        'events': [
+            {'timestep': 10000, 'action': 'demand_change',
+             'description': 'Switch to mid load (request_times=30)'}
+        ]
+    },
+    'link_degradation': {
+        'description': 'Gradual bandwidth degradation on bottleneck link (180k steps)',
+        'total_steps': 180000,
+        'events': [
+            {'timestep': 10000,  'action': 'link_degradation_stage1',
+             'description': 'Link 0-4 at 60% capacity (1488 Kbps)'},
+            {'timestep': 40000,  'action': 'link_degradation_stage2',
+             'description': 'Link 0-4 at 20% capacity (496 Kbps)'},
+            {'timestep': 80000,  'action': 'link_degradation_stage3',
+             'description': 'Link 0-4 at 5% capacity (124 Kbps)'},
+            {'timestep': 120000, 'action': 'link_recovery',
+             'description': 'Full recovery to 100% (2480 Kbps)'},
+            {'timestep': 150000, 'action': 'link_degradation_stage2',
+             'description': 'Second degradation cycle: 20% (test adaptation)'},
+        ]
+    },
+}
+
+
 def main():
     args = get_mappo_args()
     torch.manual_seed(args.seed)
@@ -495,6 +540,20 @@ def main():
     if args.cuda and torch.cuda.is_available() and args.cuda_deterministic:
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
+
+    # --- Scenario selection ---
+    scenario = getattr(args, 'scenario', 'initialization')
+    sc = SCENARIO_CONFIGS.get(scenario, SCENARIO_CONFIGS['initialization'])
+    if scenario != 'initialization':
+        args.num_env_steps = sc['total_steps']
+    scenario_events = sc['events']
+    event_idx = 0
+    print(f"\n{'='*60}")
+    print(f"Scenario: {scenario} — {sc['description']}")
+    if scenario_events:
+        for ev in scenario_events:
+            print(f"  t={ev['timestep']:>7,}: {ev['description']}")
+    print(f"{'='*60}\n")
 
     log_dir = os.path.expanduser(args.log_dir)
     utils.cleanup_log_dir(log_dir)
@@ -748,6 +807,15 @@ def main():
     for step in range(args.num_env_steps):
         if args.use_linear_lr_decay:
             mappo_agent.lr_decay(step, args.num_env_steps)
+
+        # === Check for scheduled scenario events ===
+        while event_idx < len(scenario_events) and step >= scenario_events[event_idx]['timestep']:
+            ev = scenario_events[event_idx]
+            print(f"\n{'='*50}")
+            print(f">>> Step {step:,}: EVENT — {ev['description']}")
+            print(f"{'='*50}")
+            envs.change_env(ev['action'])
+            event_idx += 1
 
         with torch.no_grad():
             values = [None]*num_agent; actions = [None]*num_agent
