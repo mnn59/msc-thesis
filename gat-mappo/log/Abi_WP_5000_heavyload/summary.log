@@ -1,0 +1,10 @@
+Method: WP
+Topology: Abi
+Load: heavy
+Total Steps: 5000
+Total Time: 1991.7s
+
+Type I   (Latency-sensitive): count=1035, delay=146.32ms, thrpt=0.8546, loss=0.1481
+Type II  (Throughput-sensitive): count=1501, delay=154.77ms, thrpt=0.7884, loss=0.1634
+Type III (Latency-throughput): count=1489, delay=156.12ms, thrpt=0.7858, loss=0.1667
+Type IV  (Latency-loss): count=975, delay=157.46ms, thrpt=0.8386, loss=0.1576

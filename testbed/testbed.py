@@ -185,7 +185,7 @@ if __name__ == '__main__':
         
         # For Abi link failure & demand change test
         # we let testbed send the failure information to simenv for simple implementation 
-        # if time_step == 10000:  
+        if time_step == 10000:  
             
         #     # link failue
         #     # net.configLinkStatus('s1', 's5', 'down')
@@ -195,25 +195,25 @@ if __name__ == '__main__':
         #     ret['change'] = "demand_change"
 
         #     # initialization
-        #     # pass
+            pass
 
         # === LINK DEGRADATION SCENARIO ===
         # (comment out the other scenario blocks when using this)
-        if time_step == 10000:
-            apply_bw_change(net, 's1', 's5', 1.488)  # 60% of 2.48 Mbps
-            ret['change'] = 'link_degradation_stage1'
-        elif time_step == 40000:
-            apply_bw_change(net, 's1', 's5', 0.496)  # 20%
-            ret['change'] = 'link_degradation_stage2'
-        elif time_step == 80000:
-            apply_bw_change(net, 's1', 's5', 0.124)  # 5%
-            ret['change'] = 'link_degradation_stage3'
-        elif time_step == 120000:
-            apply_bw_change(net, 's1', 's5', 2.48)   # 100% recovery
-            ret['change'] = 'link_recovery'
-        elif time_step == 150000:
-            apply_bw_change(net, 's1', 's5', 0.496)  # 20% re-degrade
-            ret['change'] = 'link_degradation_stage2'
+        # if time_step == 10000:
+        #     apply_bw_change(net, 's1', 's5', 1.488)  # 60% of 2.48 Mbps
+        #     ret['change'] = 'link_degradation_stage1'
+        # elif time_step == 40000:
+        #     apply_bw_change(net, 's1', 's5', 0.496)  # 20%
+        #     ret['change'] = 'link_degradation_stage2'
+        # elif time_step == 80000:
+        #     apply_bw_change(net, 's1', 's5', 0.124)  # 5%
+        #     ret['change'] = 'link_degradation_stage3'
+        # elif time_step == 120000:
+        #     apply_bw_change(net, 's1', 's5', 2.48)   # 100% recovery
+        #     ret['change'] = 'link_recovery'
+        # elif time_step == 150000:
+        #     apply_bw_change(net, 's1', 's5', 0.496)  # 20% re-degrade
+        #     ret['change'] = 'link_degradation_stage2'
 
     
         

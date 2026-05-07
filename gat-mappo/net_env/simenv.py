@@ -251,7 +251,7 @@ class NetEnv():
                 break
         # a looser fallback policy trigger
         
-        threshold = 1.2 # 2 for heavy load
+        threshold = 2 # 2 for heavy load. it was 1.2
         for i in range(len(path) - 1):
             if self._link_usage[path[i]][path[i + 1]] > threshold * self._link_capa[path[i]][path[i + 1]]: 
                 circle_flag = 1 # indicating safe learning approach being used
@@ -554,8 +554,8 @@ class NetEnv():
         # setup flow generating step
         if toponame == "Abi":
             self._request_demands = [[100], [1500], [1500], [500]]
-            # self._request_times = [[50], [50], [50], [50]] # heavy load
-            self._request_times = [[10], [10], [10], [10]] # light load
+            self._request_times = [[50], [50], [50], [50]] # heavy load
+            # self._request_times = [[10], [10], [10], [10]] # light load
             #self._request_times = [[30], [30], [30], [30]] # mid load
         elif toponame == "GEA":
             self._request_demands = [[100], [1500], [1500], [500]]

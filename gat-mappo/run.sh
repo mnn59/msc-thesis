@@ -15,8 +15,8 @@
 #     --num-pretrain-epochs 30 --num-pretrain-steps 128 \
 #     --lr 2.5e-5 --ppo-epoch 4 --clip-param 0.1 --max-grad-norm 0.5 \
 #     --use-gae --use-linear-lr-decay --no-gat \
-#     --log-dir ./log/ppo_initialization \
-#     --model-save-path ./model/ppo_initialization \
+#     --log-dir ./log/ppo_initialization_heavy \
+#     --model-save-path ./model/ppo_initialization_heavy \
 #     --seed 1
 
 # Link failure (Fig.5 b,e)
@@ -39,16 +39,16 @@
 # #############  GAT-MAPPO-CTDE  ###################################
 
 # Initialization (Fig.5 a,d)
-# python3 main_mappo.py \
-#     --env-name Abi --demand-matrix Abi_500.txt \
-#     --num-env-steps 300000 --num-steps 512 --num-mini-batch 1 \
-#     --num-pretrain-epochs 30 --num-pretrain-steps 128 \
-#     --clip-param 0.2 --ppo-epoch 15 \
-#     --actor-lr 5e-4 --critic-lr 5e-4 \
-#     --use-gat --use-linear-lr-decay \
-#     --log-dir ./log/mappo_initialization \
-#     --model-save-path ./model/mappo_initialization \
-#     --seed 1
+python3 main_mappo.py \
+    --env-name Abi --demand-matrix Abi_500.txt \
+    --num-env-steps 300000 --num-steps 512 --num-mini-batch 1 \
+    --num-pretrain-epochs 30 --num-pretrain-steps 128 \
+    --clip-param 0.2 --ppo-epoch 15 \
+    --actor-lr 5e-4 --critic-lr 5e-4 \
+    --use-gat --use-linear-lr-decay \
+    --log-dir ./log/mappo_initialization_heavy \
+    --model-save-path ./model/mappo_initialization_heavy \
+    --seed 1
 
 # Link failure (Fig.5 b,e)
 # python3 main_mappo.py \
@@ -68,13 +68,13 @@
 
 
 # Link degradation scenario
-python3 main_mappo.py \
-    --scenario link_degradation \
-    --env-name Abi --demand-matrix Abi_500.txt \
-    --num-env-steps 180000 --use-gat \
-    --log-dir ./log/mappo_link_degradation \
-    --model-load-path ./model/mappo_initialization \
-    --model-save-path ./model/mappo_link_degradation
+# python3 main_mappo.py \
+#     --scenario link_degradation \
+#     --env-name Abi --demand-matrix Abi_500.txt \
+#     --num-env-steps 180000 --use-gat \
+#     --log-dir ./log/mappo_link_degradation \
+#     --model-load-path ./model/mappo_initialization \
+#     --model-save-path ./model/mappo_link_degradation
 
 # #############  GENERATE PLOTS  ###################################
 # python3 fig5.py --log-dir ./log/ --save-path ./fig5.png --all

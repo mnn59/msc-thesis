@@ -1,0 +1,10 @@
+Method: QoS
+Topology: Abi
+Load: heavy
+Total Steps: 5000
+Total Time: 1971.9s
+
+Type I   (Latency-sensitive): count=1008, delay=151.26ms, thrpt=0.8591, loss=0.1371
+Type II  (Throughput-sensitive): count=1538, delay=143.49ms, thrpt=0.7965, loss=0.1574
+Type III (Latency-throughput): count=1452, delay=155.08ms, thrpt=0.7834, loss=0.1706
+Type IV  (Latency-loss): count=1002, delay=150.19ms, thrpt=0.8397, loss=0.1551
