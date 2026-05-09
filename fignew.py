@@ -146,7 +146,7 @@ METHOD_STYLES = {
     "LBR": {"linestyle": "-.", "linewidth": 1.5},
     "WP": {"linestyle": "-.", "linewidth": 1.5},
     "QoSR": {"linestyle": (0, (3, 1, 1, 1)), "linewidth": 1.5},
-    "DRL-OR": {"linestyle": ":", "linewidth": 1.8},
+    "DRL-OR": {"linestyle": "-", "linewidth": 1.8},
     "PPO": {"linestyle": ":", "linewidth": 1.8},
     "MAPPO-OR": {"linestyle": "-", "linewidth": 1.8},
     "MAPPO": {"linestyle": "-", "linewidth": 1.8},
