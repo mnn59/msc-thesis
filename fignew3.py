@@ -190,6 +190,91 @@ def plot_metric(root: Path, out_dir: Path, metric: str, methods: List[str], type
     plt.close(fig)
 
 
+
+def plot_all_metrics_combined(
+    root: Path,
+    out_dir: Path,
+    metrics: List[str],
+    methods: List[str],
+    tail: int
+) -> None:
+    metrics = [canonical_metric(m) for m in metrics]
+    methods = [canonical_method(m) for m in methods]
+
+    fig, axes = plt.subplots(1, len(metrics), figsize=(15, 4.8), sharex=False)
+
+    if len(metrics) == 1:
+        axes = [axes]
+
+    x = np.arange(len(LOADS))
+    n = len(methods)
+    width = min(0.8 / n, 0.16)
+
+    handles = []
+    labels = []
+
+    for ax, metric in zip(axes, metrics):
+        types = default_types_for_metric(metric)
+
+        for i, method in enumerate(methods):
+            ys = []
+            for _, load in LOADS:
+                value = method_metric_value(
+                    root=root,
+                    method=method,
+                    load=load,
+                    metric=metric,
+                    types=types,
+                    tail=tail
+                )
+                ys.append(value)
+
+            offset = (i - (n - 1) / 2) * width
+
+            bars = ax.bar(
+                x + offset,
+                ys,
+                width,
+                label=METHOD_LABELS.get(method, method),
+                hatch=METHOD_HATCHES.get(method, ""),
+                edgecolor="black",
+                linewidth=0.7,
+                alpha=0.90,
+            )
+
+            if ax == axes[0]:
+                handles.append(bars[0])
+                labels.append(METHOD_LABELS.get(method, method))
+
+        ax.set_xticks(x)
+        ax.set_xticklabels([label for label, _ in LOADS], fontweight="bold")
+        ax.set_ylabel(METRIC_LABELS.get(metric, metric))
+        ax.set_title(METRIC_LABELS.get(metric, metric), fontsize=11, fontweight="bold")
+        ax.grid(axis="y", alpha=0.25)
+
+    fig.suptitle(
+        "Performance Comparison on Abilene Light/Heavy Load",
+        fontsize=14,
+        fontweight="bold"
+    )
+
+    fig.legend(
+        handles,
+        labels,
+        loc="lower center",
+        ncol=len(methods),
+        frameon=True,
+        bbox_to_anchor=(0.5, -0.02)
+    )
+
+    fig.tight_layout(rect=[0, 0.08, 1, 0.92])
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_dir / "bar_abi_light_heavy_combined.png", dpi=300, bbox_inches="tight")
+    fig.savefig(out_dir / "bar_abi_light_heavy_combined.pdf", bbox_inches="tight")
+    plt.close(fig)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path("./log"))
@@ -200,10 +285,18 @@ def main() -> None:
     parser.add_argument("--tail", type=int, default=5000)
     args = parser.parse_args()
 
-    for metric in args.metrics:
-        metric = canonical_metric(metric)
-        types = args.types if args.types is not None else default_types_for_metric(metric)
-        plot_metric(args.root, args.out_dir, metric, args.methods, types, args.tail)
+    # for metric in args.metrics:
+    #     metric = canonical_metric(metric)
+    #     types = args.types if args.types is not None else default_types_for_metric(metric)
+    #     plot_metric(args.root, args.out_dir, metric, args.methods, types, args.tail)
+
+    plot_all_metrics_combined(
+        root=args.root,
+        out_dir=args.out_dir,
+        metrics=args.metrics,
+        methods=args.methods,
+        tail=args.tail
+    )
 
     print(f"Bar charts saved under: {args.out_dir.resolve()}")
 
