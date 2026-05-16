@@ -23,32 +23,32 @@
 # python3 main.py \
 #     --env-name Abi --demand-matrix Abi_500.txt \
 #     --num-env-steps 180000 --use-gae --no-gat \
-#     --log-dir ./log/ppo_link_failure \
-#     --model-load-path ./model/ppo_initialization \
-#     --model-save-path ./model/ppo_link_failure
+#     --log-dir ./log/ppo_link_failure_heavy \
+#     --model-load-path ./model/ppo_initialization_heavy \
+#     --model-save-path ./model/ppo_link_failure_heavy
 
 # Traffic change (Fig.5 c,f)
-# python3 main.py \
-#     --env-name Abi --demand-matrix Abi_500.txt \
-#     --num-env-steps 180000 --use-gae --no-gat \
-#     --log-dir ./log/ppo_traffic_change \
-#     --model-load-path ./model/ppo_initialization \
-#     --model-save-path ./model/ppo_traffic_change
+python3 main.py \
+    --env-name Abi --demand-matrix Abi_500.txt \
+    --num-env-steps 180000 --use-gae --no-gat \
+    --log-dir ./log/ppo_traffic_change_heavy \
+    --model-load-path ./model/ppo_initialization_heavy \
+    --model-save-path ./model/ppo_traffic_change_heavy
 
 
 # #############  GAT-MAPPO-CTDE  ###################################
 
 # Initialization (Fig.5 a,d)
-python3 main_mappo.py \
-    --env-name Abi --demand-matrix Abi_500.txt \
-    --num-env-steps 300000 --num-steps 512 --num-mini-batch 1 \
-    --num-pretrain-epochs 30 --num-pretrain-steps 128 \
-    --clip-param 0.2 --ppo-epoch 15 \
-    --actor-lr 5e-4 --critic-lr 5e-4 \
-    --use-gat --use-linear-lr-decay \
-    --log-dir ./log/mappo_initialization_heavy \
-    --model-save-path ./model/mappo_initialization_heavy \
-    --seed 1
+# python3 main_mappo.py \
+#     --env-name Abi --demand-matrix Abi_500.txt \
+#     --num-env-steps 300000 --num-steps 512 --num-mini-batch 1 \
+#     --num-pretrain-epochs 30 --num-pretrain-steps 128 \
+#     --clip-param 0.2 --ppo-epoch 15 \
+#     --actor-lr 5e-4 --critic-lr 5e-4 \
+#     --use-gat --use-linear-lr-decay \
+#     --log-dir ./log/mappo_initialization_heavy \
+#     --model-save-path ./model/mappo_initialization_heavy \
+#     --seed 1
 
 # Link failure (Fig.5 b,e)
 # python3 main_mappo.py \

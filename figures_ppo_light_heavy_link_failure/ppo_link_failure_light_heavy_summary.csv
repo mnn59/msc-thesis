@@ -1,0 +1,25 @@
+metric,load,type,value
+delay,Light Load,type0,12.169799999999999
+delay,Light Load,type1,12.794033326
+delay,Light Load,type2,12.316266653
+delay,Heavy Load,type0,114.034
+delay,Heavy Load,type1,108.041366658
+delay,Heavy Load,type2,109.09189998800001
+throughput,Light Load,type0,0.9876987447900001
+throughput,Light Load,type1,1.0049621904186667
+throughput,Light Load,type2,1.0061250424786667
+throughput,Heavy Load,type0,0.85480337651
+throughput,Heavy Load,type1,0.8103903050646667
+throughput,Heavy Load,type2,0.8254463950940001
+loss,Light Load,type0,0.0
+loss,Light Load,type1,0.0
+loss,Light Load,type2,0.0
+loss,Heavy Load,type0,13.6215692
+loss,Heavy Load,type1,16.237860499999996
+loss,Heavy Load,type2,14.2367688
+stretch,Light Load,type0,1.0363907038292945
+stretch,Light Load,type1,1.073608469109255
+stretch,Light Load,type2,1.0525184021172773
+stretch,Heavy Load,type0,1.0314283351252997
+stretch,Heavy Load,type1,1.0649243238772643
+stretch,Heavy Load,type2,1.115375072367877

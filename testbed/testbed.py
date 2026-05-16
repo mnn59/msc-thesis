@@ -187,15 +187,15 @@ if __name__ == '__main__':
         # we let testbed send the failure information to simenv for simple implementation 
         if time_step == 10000:  
             
-        #     # link failue
-        #     # net.configLinkStatus('s1', 's5', 'down')
-        #     # ret['change'] = 'link_failure'
+            # link failue
+            # net.configLinkStatus('s1', 's5', 'down')
+            # ret['change'] = 'link_failure'
             
         #     # demand change
-        #     ret['change'] = "demand_change"
+            ret['change'] = "demand_change"
 
         #     # initialization
-            pass
+            # pass
 
         # === LINK DEGRADATION SCENARIO ===
         # (comment out the other scenario blocks when using this)
