@@ -28,12 +28,12 @@
 #     --model-save-path ./model/ppo_link_failure_heavy
 
 # Traffic change (Fig.5 c,f)
-python3 main.py \
-    --env-name Abi --demand-matrix Abi_500.txt \
-    --num-env-steps 180000 --use-gae --no-gat \
-    --log-dir ./log/ppo_traffic_change_heavy \
-    --model-load-path ./model/ppo_initialization_heavy \
-    --model-save-path ./model/ppo_traffic_change_heavy
+# python3 main.py \
+#     --env-name Abi --demand-matrix Abi_500.txt \
+#     --num-env-steps 180000 --use-gae --no-gat \
+#     --log-dir ./log/ppo_traffic_change_heavy \
+#     --model-load-path ./model/ppo_initialization_heavy \
+#     --model-save-path ./model/ppo_traffic_change_heavy
 
 
 # #############  GAT-MAPPO-CTDE  ###################################
@@ -51,12 +51,12 @@ python3 main.py \
 #     --seed 1
 
 # Link failure (Fig.5 b,e)
-# python3 main_mappo.py \
-#     --env-name Abi --demand-matrix Abi_500.txt \
-#     --num-env-steps 180000 --use-gat \
-#     --log-dir ./log/mappo_link_failure \
-#     --model-load-path ./model/mappo_initialization \
-#     --model-save-path ./model/mappo_link_failure
+python3 main_mappo.py \
+    --env-name Abi --demand-matrix Abi_500.txt \
+    --num-env-steps 180000 --use-gat \
+    --log-dir ./log/mappo_link_failure_heavy \
+    --model-load-path ./model/mappo_initialization_heavy \
+    --model-save-path ./model/mappo_link_failure_heavy
 
 # Traffic change (Fig.5 c,f)
 # python3 main_mappo.py \

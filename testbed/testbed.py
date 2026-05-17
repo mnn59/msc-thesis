@@ -13,6 +13,7 @@ import json
 import time
 import heapq
 import sys
+import itertools
 
 class CustomTopo(Topo):
     def __init__(self, nodeNum, linkSet, bandwidths, losses, **opts):
@@ -153,6 +154,7 @@ if __name__ == '__main__':
     conn, addr = s.accept()
     print('Connection address:', addr)
     time_step = 0
+    counter = itertools.count()
     # receive instruction from sim_env.py and generate request and send results
     while True:
         try:
@@ -166,7 +168,8 @@ if __name__ == '__main__':
         #print("msg:", msg)
          
         while len(requests_pq) > 0 and requests_pq[0][0] <= time_step:
-            ind, popens = heapq.heappop(requests_pq)
+            # ind, popens = heapq.heappop(requests_pq)
+            ind, _, popens = heapq.heappop(requests_pq)
             popens[0].kill()
             popens[1].kill()
         
@@ -175,7 +178,8 @@ if __name__ == '__main__':
         rtime = data_js['rtime']
         delay, throughput, loss, popens = generate_request(net, data_js['src'], data_js['src_port'], data_js['dst'], data_js['dst_port'], data_js['rtype'], data_js['demand'], 1000000, time_step) # rtime is a deprecated para
         
-        heapq.heappush(requests_pq, (rtime + time_step, popens))
+        # heapq.heappush(requests_pq, (rtime + time_step, popens))
+        heapq.heappush(requests_pq, (rtime + time_step, next(counter), popens))
         
         ret = {
                 'delay': delay,
@@ -188,11 +192,11 @@ if __name__ == '__main__':
         if time_step == 10000:  
             
             # link failue
-            # net.configLinkStatus('s1', 's5', 'down')
-            # ret['change'] = 'link_failure'
+            net.configLinkStatus('s1', 's5', 'down')
+            ret['change'] = 'link_failure'
             
         #     # demand change
-            ret['change'] = "demand_change"
+            # ret['change'] = "demand_change"
 
         #     # initialization
             # pass
