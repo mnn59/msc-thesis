@@ -192,11 +192,11 @@ if __name__ == '__main__':
         if time_step == 10000:  
             
             # link failue
-            net.configLinkStatus('s1', 's5', 'down')
-            ret['change'] = 'link_failure'
+            # net.configLinkStatus('s1', 's5', 'down')
+            # ret['change'] = 'link_failure'
             
         #     # demand change
-            # ret['change'] = "demand_change"
+            ret['change'] = "demand_change"
 
         #     # initialization
             # pass
