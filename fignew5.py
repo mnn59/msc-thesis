@@ -86,9 +86,9 @@ def run_dir(root: Path, method: str, scenario: str, load: str) -> Optional[Path]
         if scenario == "initialization":
             name = "mappo_initialization_heavy" if load == "heavy" else "mappo_initialization"
         elif scenario == "link_failure":
-            name = "mappo_link_failure"
+            name = "mappo_link_failure_heavy" if load == "heavy" else "mappo_link_failure"
         elif scenario == "traffic_change":
-            name = "mappo_traffic_change"
+            name = "mappo_traffic_change_heavy" if load == "heavy" else "mappo_traffic_change"
         else:
             return None
         p = root / name
@@ -98,9 +98,9 @@ def run_dir(root: Path, method: str, scenario: str, load: str) -> Optional[Path]
         if scenario == "initialization":
             name = "ppo_initialization_heavy" if load == "heavy" else "ppo_initialization"
         elif scenario == "link_failure":
-            name = "ppo_link_failure"
+            name = "ppo_link_failure_heavy" if load == "heavy" else "ppo_link_failure"
         elif scenario == "traffic_change":
-            name = "ppo_traffic_change"
+            name = "ppo_traffic_change_heavy" if load == "heavy" else "ppo_traffic_change"
         else:
             return None
         p = root / name
