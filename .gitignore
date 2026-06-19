@@ -1,3 +1,5 @@
 other/
 gat-mappo/log/
 gat-mappo/model/
+gat-mappo/runs
+*/__pycache__
