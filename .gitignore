@@ -1,1 +1,3 @@
-./other
+./other/
+./gat-mappo/log/
+./gat-mappo/model/
