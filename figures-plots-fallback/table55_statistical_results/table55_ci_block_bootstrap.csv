@@ -1,0 +1,13 @@
+Load,Metric,Type,Mean_OR_MAPPO,Mean_OR_DRL,Difference_MAPPO_minus_DRL,CI95_Low,CI95_High,Relative_change_percent,CI_excludes_zero,Interpretation,N_blocks_MAPPO,N_blocks_DRL
+Light,delay,I,13.1057,14.5503,-1.4446,-2.3998,-0.5175,-9.9283,True,OR-MAPPO better,50,50
+Light,delay,III,12.432,14.0712,-1.6392,-2.5151,-0.8176,-11.6491,True,OR-MAPPO better,50,50
+Light,delay,IV,12.4234,13.6547,-1.2313,-1.9059,-0.6169,-9.0176,True,OR-MAPPO better,50,50
+Light,throughput,II,98.6026,97.6066,0.9959,0.6492,1.3393,1.0203,True,OR-MAPPO better,50,50
+Light,throughput,III,99.8216,98.6703,1.1514,0.888,1.4177,1.1669,True,OR-MAPPO better,50,50
+Light,loss,IV,0.2013,0.7949,-0.5937,-0.6753,-0.5139,-74.6806,True,OR-MAPPO better,50,50
+Heavy,delay,I,97.3063,117.7086,-20.4023,-26.7004,-14.3806,-17.3329,True,OR-MAPPO better,50,50
+Heavy,delay,III,101.5921,118.1266,-16.5345,-25.2834,-7.7746,-13.9972,True,OR-MAPPO better,50,50
+Heavy,delay,IV,104.8394,120.7017,-15.8623,-23.4711,-8.5792,-13.1417,True,OR-MAPPO better,50,50
+Heavy,throughput,II,79.1939,82.2416,-3.0477,-4.1403,-1.9751,-3.7058,True,OR-DRL better,50,50
+Heavy,throughput,III,82.7837,81.8012,0.9825,-0.1971,2.1096,1.2011,False,Not statistically significant,50,50
+Heavy,loss,IV,15.0433,14.4264,0.6169,-0.436,1.6701,4.2762,False,Not statistically significant,50,50
